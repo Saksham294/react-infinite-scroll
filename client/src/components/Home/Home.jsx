@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect,useCallback} from 'react'
 import './Home.css'
 import Card from '../Card/Card'
 import {CircularProgress } from '@mui/material';
@@ -19,9 +19,14 @@ import {
     remote,
     minBasePay
  } from './data';
+import { filterItems } from './functions';
+import axios from 'axios';
 
 const Home = () => {
     
+    const [items, setItems] = useState([]);
+    const [filteredItems, setFilteredItems] = useState([]);
+
     const [selectedRoles, setSelectedRoles] = useState([]);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [selectedExperience, setSelectedExperience] = useState([]);
@@ -32,6 +37,33 @@ const Home = () => {
         const selectedNumbers = selectedValues.map((value) => parseInt(value));
         setSelectedMinBasePay(selectedNumbers);
     };
+
+    const fetchData = async () => {
+        const url = 'https://api.weekday.technology/adhoc/getSampleJdJSON';
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        const data = {
+            limit: 10,
+            offset: 0
+        };
+
+        try {
+            const response = await axios.post(url, data, config);
+            console.log("Response ",response.data.jdList)
+            setItems(response.data.jdList);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [])
+
+
 
     return (
         <div className='home-container'>
