@@ -1,0 +1,24 @@
+.card-container {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    width: 250px;
+    height: 500px;
+    border-radius: 10px;
+    font-family: 'Roboto';
+    display: flex;
+    flex-direction: column;
+    gap: 1.2vh;
+    padding: 2.5vh;
+    margin: 1vh;
+    transition: 0.2s ease-in-out;
+}
+
+.card-container:hover {
+    scale: 1.04;
+}
+
+.company-logo>img {
+    width: 4vh;
+    height: 4vh;
+    /* border: 2px solid green; */
+}
+
