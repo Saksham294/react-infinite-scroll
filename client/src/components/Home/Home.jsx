@@ -25,6 +25,8 @@ import axios from 'axios';
 const Home = () => {
     
     const [items, setItems] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [index, setIndex] = useState(1);
     const [filteredItems, setFilteredItems] = useState([]);
 
     const [selectedRoles, setSelectedRoles] = useState([]);
@@ -37,7 +39,26 @@ const Home = () => {
         const selectedNumbers = selectedValues.map((value) => parseInt(value));
         setSelectedMinBasePay(selectedNumbers);
     };
+    const applyFilters = () => {
+        const allFiltersEmpty =
+            selectedRoles.length === 0 &&
+            selectedExperience.length === 0 &&
+            selectedRemote.length === 0 &&
+            selectedMinBasePay.length === 0;
 
+        if (allFiltersEmpty) {
+            setFilteredItems([]);
+        } else {
+            const filteredItems = filterItems(items, {
+                selectedRoles,
+                selectedExperience,
+                selectedRemote,
+                selectedMinBasePay,
+            });
+            setFilteredItems(filteredItems);
+            console.log("Filtered Items ",filteredItems)
+        }
+    };
     const fetchData = async () => {
         const url = 'https://api.weekday.technology/adhoc/getSampleJdJSON';
         const config = {
@@ -59,9 +80,58 @@ const Home = () => {
         }
     };
 
+    const fetchDataOnScroll = useCallback(async () => {
+        if (isLoading) return;
+
+        setIsLoading(true);
+        let data = {
+            limit: 10,
+            offset: index,
+        };
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        try {
+            const response = await axios.post(
+                `https://api.weekday.technology/adhoc/getSampleJdJSON`,
+                data,
+                config
+            );
+            const newItems = response.data.jdList;
+            setItems(prevItems => [...prevItems, ...newItems]); // Concatenate new items with old items
+            console.log("Items",items)
+            setIndex(prevIndex => prevIndex + 1);
+        } catch (error) {
+            console.error(error);
+        }
+        setIsLoading(false);
+    }, [index, isLoading]);
+
+
     useEffect(() => {
         fetchData();
     }, [])
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const { scrollTop, clientHeight, scrollHeight } =
+                document.documentElement;
+            if (scrollTop + clientHeight >= scrollHeight - 20) {
+                fetchDataOnScroll();
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [fetchDataOnScroll]);
+
+    useEffect(() => {
+        applyFilters();
+    }, [selectedEmployees, selectedRoles, selectedExperience, selectedRemote, selectedMinBasePay,items]);
 
 
 
@@ -290,10 +360,40 @@ const Home = () => {
                 </div>
             </div>
             <div className="matching-jobs">
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
+            {filteredItems.length > 0 ? (
+                    // Render filtered items
+                    filteredItems.map(job => (
+                        <Card
+                            jdLink={job.jdLink}
+                            jobDetailsFromCompany={job.jobDetailsFromCompany}
+                            maxJdSalary={job.maxJdSalary}
+                            minJdSalary={job.minJdSalary}
+                            location={job.location}
+                            minExp={job.minExp}
+                            maxExp={job.maxExp}
+                            jobRole={job.jobRole + " Engineer"}
+                            companyName={job.companyName}
+                            logoUrl={job.logoUrl}
+                        />
+                    ))
+                ) : (
+                    // Render all jobs when no filters are selected
+                    items.map(job => (
+                        <Card
+                            jdLink={job.jdLink}
+                            jobDetailsFromCompany={job.jobDetailsFromCompany}
+                            maxJdSalary={job.maxJdSalary}
+                            minJdSalary={job.minJdSalary}
+                            location={job.location}
+                            minExp={job.minExp}
+                            maxExp={job.maxExp}
+                            jobRole={job.jobRole + " Engineer"}
+                            companyName={job.companyName}
+                            logoUrl={job.logoUrl}
+                        />
+                    ))
+                )}
+                {isLoading && <CircularProgress />}
             </div>
         </div>
     )
