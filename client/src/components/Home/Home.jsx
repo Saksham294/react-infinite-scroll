@@ -34,6 +34,9 @@ const Home = () => {
     const [selectedExperience, setSelectedExperience] = useState([]);
     const [selectedRemote, setSelectedRemote] = useState([]);
     const [selectedMinBasePay, setSelectedMinBasePay] = useState([]);
+
+    const MemoizedCard=React.memo(Card)
+
     const handleChange = (event) => {
         const selectedValues = event.target.value;
         const selectedNumbers = selectedValues.map((value) => parseInt(value));
@@ -363,7 +366,7 @@ const Home = () => {
             {filteredItems.length > 0 ? (
                     // Render filtered items
                     filteredItems.map(job => (
-                        <Card
+                        <MemoizedCard
                             jdLink={job.jdLink}
                             jobDetailsFromCompany={job.jobDetailsFromCompany}
                             maxJdSalary={job.maxJdSalary}
@@ -379,7 +382,7 @@ const Home = () => {
                 ) : (
                     // Render all jobs when no filters are selected
                     items.map(job => (
-                        <Card
+                        <MemoizedCard
                             jdLink={job.jdLink}
                             jobDetailsFromCompany={job.jobDetailsFromCompany}
                             maxJdSalary={job.maxJdSalary}
