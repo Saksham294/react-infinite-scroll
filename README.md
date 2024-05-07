@@ -15,7 +15,7 @@ Created the weekday-assignment with all the requested features
 Clone the repository
 
 ```bash
-git clone
+git clone https://github.com/Saksham294/weekday-assignment.git
 ```
 Navigate and open the client folder
 ```bash
