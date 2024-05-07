@@ -29,19 +29,23 @@ const Home = () => {
     const [index, setIndex] = useState(1);
     const [filteredItems, setFilteredItems] = useState([]);
 
+    //filter states
     const [selectedRoles, setSelectedRoles] = useState([]);
     const [selectedEmployees, setSelectedEmployees] = useState([]);
     const [selectedExperience, setSelectedExperience] = useState([]);
     const [selectedRemote, setSelectedRemote] = useState([]);
     const [selectedMinBasePay, setSelectedMinBasePay] = useState([]);
 
-    const MemoizedCard=React.memo(Card)
+    const MemoizedCard=React.memo(Card) //Memoize Card to improve performance
 
+    //Convert string to number
     const handleChange = (event) => {
         const selectedValues = event.target.value;
         const selectedNumbers = selectedValues.map((value) => parseInt(value));
         setSelectedMinBasePay(selectedNumbers);
     };
+
+    //Apply filters
     const applyFilters = () => {
         const allFiltersEmpty =
             selectedRoles.length === 0 &&
@@ -62,6 +66,8 @@ const Home = () => {
             console.log("Filtered Items ",filteredItems)
         }
     };
+
+    //Fetch data when component first mounts
     const fetchData = async () => {
         const url = 'https://api.weekday.technology/adhoc/getSampleJdJSON';
         const config = {
