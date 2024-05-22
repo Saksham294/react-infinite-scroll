@@ -1,5 +1,5 @@
 # React Infinite Scroll
-Created the weekday-assignment with all the requested features
+Created React Infinite Scroll Component which fetches data automatically on scroll and select dropdown filters
 
 
 ## Features
