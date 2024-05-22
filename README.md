@@ -1,4 +1,4 @@
-# Weekday-Assignment
+# React Infinite Scroll
 Created the weekday-assignment with all the requested features
 
 
